@@ -21,8 +21,8 @@
 - Now you can run git checkout -- . to retrieve source code.
 
 ### How to Use
-- python3 git-dump.py website.com</pre>
-- After running above script type: `git checkout --` .
+- python3 git-dump.py website.com
+- After running above script type: `git checkout -- .`
 - It will recover all source code.
 
 ### Screenshot
@@ -31,5 +31,4 @@
 ### TODO
 - Search through git repository for secrets by digging deep into commit history and branches.
 
-### Credits
-- Sean B. Palmer for his index file parser. (https://github.com/sbp/gin)
+**Credits** Sean B. Palmer for his index file parser. (https://github.com/sbp/gin)
