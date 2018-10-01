@@ -26,7 +26,7 @@
 - It will recover all source code.
 
 ### Screenshot
-<img src="https://i.imgur.com/MPadPL9.png" />
+<img src="https://i.imgur.com/Wrf8IOi.png" />
 
 ### TODO
 - Search through git repository for secrets by digging deep into commit history and branches.
