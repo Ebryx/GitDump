@@ -30,3 +30,6 @@
 
 ### TODO
 - Search through git repository for secrets by digging deep into commit history and branches.
+
+### Credits
+- Sean B. Palmer for his index file parser. (https://github.com/sbp/gin)
