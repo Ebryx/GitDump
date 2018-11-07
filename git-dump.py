@@ -27,7 +27,7 @@ def has_hsts(site):
         return False
 
 
-if "http" not in website or "https" not in website:
+if "http" not in website and "https" not in website:
 	if has_hsts(website):
 		website = "https://" + website
 	else:
@@ -114,7 +114,7 @@ filesToParse = [".git/HEAD", ".git/logs/HEAD", ".git/logs/refs/heads/master",
 
 for fileToParse in filesToParse:
 	if os.path.exists(fileToParse):
-		with open(fileToParse , "r") as f:
+		with open(fileToParse , "r", encoding="utf8") as f:
 			text = f.read()
 			# extract sha1 (40 character words) from files 
 			sha1List = sha1List + re.findall(r'\b\w{{{}}}\b'.format(40), text)
