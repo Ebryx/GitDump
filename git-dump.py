@@ -2,6 +2,7 @@ import requests, os, sys, json, re
 import gin
 import os.path
 
+requests.packages.urllib3.disable_warnings()
 
 if len(sys.argv) < 2:
 	print("Please provide website URL e.g. example.com")
@@ -15,7 +16,7 @@ def has_hsts(site):
     Connect to target site and check its headers."
     """
     try:
-        req = requests.get('https://' + site)
+        req = requests.get('https://' + site, verify=False)
     except requests.exceptions.SSLError as error:
         print("doesn't have SSL working properly" + error)
         return False
@@ -46,10 +47,10 @@ if not os.path.exists(".git"):
 
 
 fileNamesList = ["FETCH_HEAD", "HEAD", "ORIG_HEAD", "config", "description", "packed-refs", "info/exclude",
-				"info/refs", "logs/HEAD", "logs/refs/heads/develop", "logs/refs/heads/master", "logs/refs/remotes/origin/develop"
-				, "logs/refs/remotes/origin/step_develop", "logs/refs/remotes/origin/master", "logs/refs/remotes/github/master", 
+				"info/refs", "logs/HEAD", "logs/refs/heads/develop", "logs/refs/heads/master", "logs/refs/remotes/origin/develop",
+				"logs/refs/remotes/origin/step_develop", "logs/refs/remotes/origin/master", "logs/refs/remotes/github/master", 
 				"refs/heads/develop", "refs/heads/master", "refs/remotes/origin/develop", "refs/remotes/origin/master",
-				 "refs/remotes/origin/step_develop", "refs/remotes/github/master", "objects/info/packs", "refs/remotes/origin/HEAD"]
+				"refs/remotes/origin/step_develop", "refs/remotes/github/master", "objects/info/packs", "refs/remotes/origin/HEAD"]
 
 dirNamesList = ["info", "logs", "logs/refs", "logs/refs/heads", "logs/refs/remotes", "logs/refs/remotes/github",
 				"logs/refs/remotes/origin", "refs", "refs/heads", "refs/remotes", "refs/remotes/origin", "refs/remotes/github", 
@@ -63,7 +64,7 @@ for fileName in fileNamesList:
 	with open(".git/" + fileName, "wb+") as f:
 		print("Fetching: " + fileName)
 		try:
-			downloaded = requests.get(website+fileName, allow_redirects=False).content
+			downloaded = requests.get(website+fileName, allow_redirects=False, verify=False).content
 			if not ("<!DOCTYPE html>" in str(downloaded) or "<html>" in str(downloaded) or '<html lang="en">' in str(downloaded) or str(downloaded).isspace() or str(downloaded) == ""):
 				f.write(downloaded)
 		except:
@@ -80,7 +81,7 @@ for i in range(0,256):
 
 print("Downloading Index File")
 with open(".git/index", "wb+") as indexFile:
-	downloaded = requests.get(website+"index", allow_redirects=False).content
+	downloaded = requests.get(website+"index", allow_redirects=False, verify=False).content
 	if not ("<!DOCTYPE html>" in str(downloaded) or "<html>" in str(downloaded) or '<html lang="en">' in str(downloaded) or str(downloaded).isspace() or str(downloaded) == ""):
 		indexFile.write(downloaded)
 
@@ -108,9 +109,9 @@ for element in jsonList:
 		pass
 
 filesToParse = [".git/HEAD", ".git/logs/HEAD", ".git/logs/refs/heads/master",
-		 ".git/logs/refs/remotes/github/master", ".git/packed-refs", ".git/ORIG_HEAD",
-		 ".git/info/refs", ".git/refs/heads/master", ".git/refs/remotes/github/master",
-		 ".git/refs/remotes/origin/HEAD"]
+		".git/logs/refs/remotes/github/master", ".git/packed-refs", ".git/ORIG_HEAD",
+		".git/info/refs", ".git/refs/heads/master", ".git/refs/remotes/github/master",
+		".git/refs/remotes/origin/HEAD"]
 
 for fileToParse in filesToParse:
 	if os.path.exists(fileToParse):
@@ -126,7 +127,7 @@ for sha1 in sha1List:
 		with open(".git/objects/" + sha1[:2] + "/" + sha1[-38:], "wb+") as f:
 			print("Fetching: " + website+"objects/" + sha1[:2] + "/" + sha1[-38:])
 			try:
-				downloaded = requests.get(website+"objects/" + sha1[:2] + "/" + sha1[-38:], allow_redirects=False).content
+				downloaded = requests.get(website+"objects/" + sha1[:2] + "/" + sha1[-38:], allow_redirects=False, verify=False).content
 				if not ("<!DOCTYPE html>" in str(downloaded) or "<html>" in str(downloaded) or '<html lang="en">' in str(downloaded) or str(downloaded).isspace() or str(downloaded) == ""):
 					print("done")
 					f.write(downloaded)
@@ -156,7 +157,7 @@ if os.path.isfile(".git/objects/info/packs"):
 	    	try:
 	        	print("Fetching .git/objects/pack/" + line[-51:-1])
 	        	with open(".git/objects/pack/" + line[-51:-1], "wb+") as packFile:
-	        		downloaded = requests.get(website+"objects/pack/" + line[-51:-1], allow_redirects=False).content
+	        		downloaded = requests.get(website+"objects/pack/" + line[-51:-1], allow_redirects=False, verify=False).content
 	        		if not ("<!DOCTYPE html>" in str(downloaded) or "<html>" in str(downloaded) or '<html lang="en">' in str(downloaded) or str(downloaded).isspace() or str(downloaded) == ""):
 	        			packFile.write(downloaded)  # pack file
 	        		else:
@@ -168,7 +169,7 @@ if os.path.isfile(".git/objects/info/packs"):
 	    	try:	
 	        	print("Fetching .git/objects/pack/" + line[-51:-5] + "idx")
 	        	with open(".git/objects/pack/" + line[-51:-5] + "idx", "wb+") as idxFile:
-	        		downloaded = requests.get(website+"objects/pack/" + line[-51:-5] + "idx", allow_redirects=False).content
+	        		downloaded = requests.get(website+"objects/pack/" + line[-51:-5] + "idx", allow_redirects=False, verify=False).content
 	        		if not ("<!DOCTYPE html>" in str(downloaded) or "<html>" in str(downloaded) or '<html lang="en">' in str(downloaded) or str(downloaded).isspace() or str(downloaded) == ""):
 	        			idxFile.write(downloaded) #idx file
 	        		else:
