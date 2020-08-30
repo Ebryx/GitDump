@@ -25,7 +25,7 @@ Usage: ./dump-git_obj.py <dir>
 
 def dump_file(cdir):
     if not os.path.exists(f'{CWD}/results'):
-        os.makedirs(result_path)
+        os.makedirs(f'{CWD}/results')
 
     for fname in os.listdir(f'{OBJECTS_PATH}/{cdir}'):
         result = subprocess.check_output(f'git cat-file -p {cdir}{fname}', shell=True)
