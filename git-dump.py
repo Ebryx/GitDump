@@ -3,6 +3,7 @@ import requests, os, sys, json, re
 import gin
 import os.path
 import concurrent.futures
+import urllib3
 from urllib3.exceptions import InsecureRequestWarning
 
 
@@ -93,7 +94,12 @@ def createDir():
 def gitFilesDownload(fileName):
 	print("Fetching: " + URL+fileName)
 	try:
-		downloaded = requests.get(URL+fileName, allow_redirects=False, headers=headers, verify=False).content
+		s = requests.Session( )
+		req = requests.Request(method='GET' ,url=URL+fileName, headers=headers)
+		prep = req.prepare()
+		prep.url = URL+fileName
+		downloaded = s.send(prep, verify=False).content
+		
 		if len(downloaded) > 0 and (not ("<!DOCTYPE html>" in str(downloaded) or "<html>" in str(downloaded) or '<html lang="en">' in str(downloaded) or str(downloaded).isspace() or str(downloaded) == "")):
 			with open(outputFolder + ".git/" + fileName, "wb+") as f:
 				f.write(downloaded)
@@ -141,7 +147,12 @@ def filesDownloadMatchingSHA1(sha1):
 	endpoint = "objects/" + sha1[:2] + "/" + sha1[-38:]
 	print("Fetching: " + URL + endpoint)
 	try:
-		downloaded = requests.get(URL + endpoint, allow_redirects=False, headers=headers, verify=False).content
+		s = requests.Session( )
+		req = requests.Request(method='GET' ,url=URL + endpoint, headers=headers)
+		prep = req.prepare()
+		prep.url = URL + endpoint
+		downloaded = s.send(prep, verify=False).content
+
 		if len(downloaded) > 0 and (not ("<!DOCTYPE html>" in str(downloaded) or "<html>" in str(downloaded) or '<html lang="en">' in str(downloaded) or str(downloaded).isspace() or str(downloaded) == "")):
 			with open(outputFolder + ".git/" + endpoint, "wb+") as f:
 				f.write(downloaded)
@@ -168,7 +179,11 @@ def packFileDownload(line):
 	try:
 		endpoint = "objects/pack/" + line[-51:-1]
 		print("Fetching " + URL + endpoint)
-		downloaded = requests.get(URL + endpoint, allow_redirects=False, headers=headers, verify=False).content
+		s = requests.Session( )
+		req = requests.Request(method='GET' ,url=URL + endpoint, headers=headers)
+		prep = req.prepare()
+		prep.url = URL + endpoint
+		downloaded = s.send(prep, verify=False).content
 		if len(downloaded) > 0 and (not ("<!DOCTYPE html>" in str(downloaded) or "<html>" in str(downloaded) or '<html lang="en">' in str(downloaded) or str(downloaded).isspace() or str(downloaded) == "")):
 			with open(outputFolder + ".git/" + endpoint, "wb+") as packFile:
 				packFile.write(downloaded)  # pack file
@@ -182,7 +197,11 @@ def idxFileDownload(line):
 	try:
 		endpoint = "objects/pack/" + line[-51:-5] + "idx"
 		print("Fetching " + URL + endpoint)
-		downloaded = requests.get(URL + endpoint, allow_redirects=False, headers=headers, verify=False).content
+		s = requests.Session( )
+		req = requests.Request(method='GET' ,url=URL + endpoint, headers=headers)
+		prep = req.prepare()
+		prep.url = URL + endpoint
+		downloaded = s.send(prep, verify=False).content
 		if len(downloaded) > 0 and (not ("<!DOCTYPE html>" in str(downloaded) or "<html>" in str(downloaded) or '<html lang="en">' in str(downloaded) or str(downloaded).isspace() or str(downloaded) == "")):
 			with open(outputFolder + ".git/" + endpoint, "wb+") as idxFile:
 				idxFile.write(downloaded) #idx file
