@@ -35,7 +35,7 @@ def has_hsts(URL):
     Connect to target site and check its headers."
     """
     try:
-        req = requests.get('https://' + URL)
+        req = requests.get('https://' + URL, timeout=30)
     except requests.exceptions.SSLError as error:
         print("doesn't have SSL working properly" + error)
         return False
@@ -93,7 +93,7 @@ def createDir():
 def gitFilesDownload(fileName):
 	print("Fetching: " + URL+fileName)
 	try:
-		downloaded = requests.get(URL+fileName, allow_redirects=False, headers=headers, verify=False).content
+		downloaded = requests.get(URL+fileName, allow_redirects=False, headers=headers, verify=False, timeout=30).content
 		if len(downloaded) > 0 and (not ("<!DOCTYPE html>" in str(downloaded) or "<html>" in str(downloaded) or '<html lang="en">' in str(downloaded) or str(downloaded).isspace() or str(downloaded) == "")):
 			with open(outputFolder + ".git/" + fileName, "wb+") as f:
 				f.write(downloaded)
@@ -117,7 +117,7 @@ def sha1Extractor():
 		data = json.loads(element)
 		try:
 			sha1List.append(data['sha1'])
-		except:
+		except Exception:
 			pass
 
 	filesToParse = [".git/HEAD", ".git/logs/HEAD", ".git/logs/refs/heads/master",
@@ -141,7 +141,7 @@ def filesDownloadMatchingSHA1(sha1):
 	endpoint = "objects/" + sha1[:2] + "/" + sha1[-38:]
 	print("Fetching: " + URL + endpoint)
 	try:
-		downloaded = requests.get(URL + endpoint, allow_redirects=False, headers=headers, verify=False).content
+		downloaded = requests.get(URL + endpoint, allow_redirects=False, headers=headers, verify=False, timeout=30).content
 		if len(downloaded) > 0 and (not ("<!DOCTYPE html>" in str(downloaded) or "<html>" in str(downloaded) or '<html lang="en">' in str(downloaded) or str(downloaded).isspace() or str(downloaded) == "")):
 			with open(outputFolder + ".git/" + endpoint, "wb+") as f:
 				f.write(downloaded)
@@ -168,7 +168,7 @@ def packFileDownload(line):
 	try:
 		endpoint = "objects/pack/" + line[-51:-1]
 		print("Fetching " + URL + endpoint)
-		downloaded = requests.get(URL + endpoint, allow_redirects=False, headers=headers, verify=False).content
+		downloaded = requests.get(URL + endpoint, allow_redirects=False, headers=headers, verify=False, timeout=30).content
 		if len(downloaded) > 0 and (not ("<!DOCTYPE html>" in str(downloaded) or "<html>" in str(downloaded) or '<html lang="en">' in str(downloaded) or str(downloaded).isspace() or str(downloaded) == "")):
 			with open(outputFolder + ".git/" + endpoint, "wb+") as packFile:
 				packFile.write(downloaded)  # pack file
@@ -182,7 +182,7 @@ def idxFileDownload(line):
 	try:
 		endpoint = "objects/pack/" + line[-51:-5] + "idx"
 		print("Fetching " + URL + endpoint)
-		downloaded = requests.get(URL + endpoint, allow_redirects=False, headers=headers, verify=False).content
+		downloaded = requests.get(URL + endpoint, allow_redirects=False, headers=headers, verify=False, timeout=30).content
 		if len(downloaded) > 0 and (not ("<!DOCTYPE html>" in str(downloaded) or "<html>" in str(downloaded) or '<html lang="en">' in str(downloaded) or str(downloaded).isspace() or str(downloaded) == "")):
 			with open(outputFolder + ".git/" + endpoint, "wb+") as idxFile:
 				idxFile.write(downloaded) #idx file
